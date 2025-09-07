@@ -1,7 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Res,
+  HttpStatus,
+  HttpCode,
+  Query,
+  Req,
+} from '@nestjs/common';
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
+import { parseSortQueryList } from 'src/libs/sorting-query';
+import { getFullURL } from 'src/libs/url';
 
 @Controller('tags')
 export class TagsController {
@@ -13,8 +28,24 @@ export class TagsController {
   }
 
   @Get()
-  findAll() {
-    return this.tagsService.findAll();
+  @HttpCode(200)
+  async findAll(
+    @Req() req: Request,
+    @Query('orderby') queryOrder: string,
+    @Query('maxpagesize') take: number = 25,
+    @Query('skip') skip: number = 0,
+  ) {
+    const orderBy = parseSortQueryList(queryOrder);
+    const tags = await this.tagsService.findAll({
+      orderBy,
+      take: +take,
+      skip: +skip,
+    });
+    const nextLink = getFullURL(req);
+    return {
+      value: tags,
+      nextLink,
+    };
   }
 
   @Get(':id')

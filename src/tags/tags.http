@@ -1,0 +1,17 @@
+GET http://localhost:3000/tags
+
+### Create a new tag
+POST http://localhost:3000/tags
+Content-Type: application/json
+
+{
+	"name": "Tag 10"
+}
+
+### Create a new tag
+PATCH http://localhost:3000/tags/1
+Content-Type: application/json
+
+{
+	"name": "Updated Tag 1"
+}
