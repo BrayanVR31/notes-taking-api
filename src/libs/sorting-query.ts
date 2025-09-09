@@ -11,7 +11,8 @@ const normalizeSortField = (query: string) => {
 };
 
 export const parseSortQueryList = (qParam: string): Record<string, Order>[] => {
-  const params = qParam.split(',');
+  const params = qParam?.split(',');
+  if(!params) return [];
   return params.reduce((prev, current) => {
     return [...prev, { [normalizeSortField(current)]: getSortOrder(current) }];
   }, []);

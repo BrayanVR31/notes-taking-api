@@ -5,7 +5,7 @@ POST http://localhost:3000/tags
 Content-Type: application/json
 
 {
-	"name": "Tag 10"
+	"name": "Tag 1"
 }
 
 ### Create a new tag
