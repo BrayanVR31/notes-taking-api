@@ -1,13 +1,4 @@
 services:
-#  sample_db:
-#    image: mysql
-#    container_name: sample_db
-#    environment:
-#      MYSQL_ROOT_PASSWORD: root
-#      MYSQL_DATABASE: sample_db 
-#    ports:
-#      - "3306:3306"
-#    restart: always
   pg_db:
     image: postgres
     restart: always
@@ -17,10 +8,62 @@ services:
       POSTGRES_DB: notes
     ports:
       - "5432:5432"
+    networks:
+      - note-taking-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U prisma -d postgres"]
+      interval: 5s
+      timeout: 2s
+      retries: 20
+    command: postgres -c listen_addresses='*'
+    logging:
+      options:
+        max-size: "10m"
+        max-file: "3"
   adminer:
     image: adminer
     container_name: adminer
     restart: always
     ports:
       - "8080:8080"
-
+    networks:
+      - note-taking-network
+  note_taking_api:
+    build:
+      context: .
+    container_name: note_taking_api
+    depends_on:
+      pg_db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    networks:
+      - note-taking-network
+  prisma_studio:
+    container_name: prisma_studio
+    image: node:22.19.0-alpine3.21
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    command: npx prisma studio --port 5555 --browser none
+    ports:
+      - "5555:5555"
+    env_file:
+      - .env
+    networks:
+      - note-taking-network
+    depends_on:
+      pg_db:
+        condition: service_healthy
+      note_taking_api:
+        condition: service_started
+networks:
+  note-taking-network:
+volumes:
+  postgres_data:
