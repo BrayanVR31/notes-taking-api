@@ -1,3 +1,4 @@
+### Get all tags
 GET http://localhost:3000/tags
 
 ### Create a new tag
@@ -5,13 +6,19 @@ POST http://localhost:3000/tags
 Content-Type: application/json
 
 {
-	"name": "Tag 1"
+	"name": "Tag 4"
 }
 
-### Create a new tag
-PATCH http://localhost:3000/tags/1
+### Find a specific tag
+GET http://localhost:3000/tags/1
+
+### Update a new tag
+PATCH http://localhost:3000/tags/3
 Content-Type: application/json
 
 {
-	"name": "Updated Tag 1"
+	"name": "Updated Tag 3"
 }
+
+### Remove a specific tag
+DELETE http://localhost:3000/tags/4

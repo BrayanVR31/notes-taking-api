@@ -10,6 +10,12 @@ COPY . .
 
 RUN npm run build
 
+FROM node:22.19.0-alpine3.21 AS development
+WORKDIR /usr/src/app
+COPY package*.json .
+RUN npm install
+COPY . .
+CMD ["npm", "run", "start:dev"]
 
 FROM node:22.19.0-alpine3.21 AS production
 

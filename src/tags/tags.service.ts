@@ -6,7 +6,7 @@ import { Tag, Prisma } from '@prisma/client';
 
 @Injectable()
 export class TagsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   create(createTagDto: CreateTagDto) {
     return this.prisma.tag.create({
@@ -20,21 +20,28 @@ export class TagsService {
     cursor?: Prisma.TagWhereUniqueInput;
     where?: Prisma.TagWhereInput;
     orderBy?:
-      | Prisma.TagOrderByWithRelationInput
-      | Prisma.TagOrderByWithRelationInput[];
+    | Prisma.TagOrderByWithRelationInput
+    | Prisma.TagOrderByWithRelationInput[];
   }): Promise<Tag[]> {
     return this.prisma.tag.findMany({ ...params });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} tag`;
+    return this.prisma.tag.findUnique({
+      where: { id }
+    });
   }
 
   update(id: number, updateTagDto: UpdateTagDto) {
-    return `This action updates a #${id} tag`;
+    return this.prisma.tag.update({
+      where: { id },
+      data: updateTagDto
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} tag`;
+    return this.prisma.tag.delete({
+      where: { id }
+    });
   }
 }
