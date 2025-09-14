@@ -20,3 +20,15 @@ model Tag {
 
   @@map("tags")
 }
+
+model User {
+  id           Int       @id @default(autoincrement()) @map("user_id")
+  email        String    @unique @map("email")
+  password     String    @map("password")
+  profileImage String?   @map("profile_image")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt() @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+
+  @@map("users")
+}

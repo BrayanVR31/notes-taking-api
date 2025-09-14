@@ -15,7 +15,7 @@ WORKDIR /usr/src/app
 COPY package*.json .
 RUN npm install
 COPY . .
-CMD ["npm", "run", "start:dev"]
+CMD ["sh", "-c", "npm run db:deploy && npm run start:dev"]
 
 FROM node:22.19.0-alpine3.21 AS production
 
