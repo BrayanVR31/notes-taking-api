@@ -1,22 +1,24 @@
-import { IsEmail, MinLength, Matches, ValidationArguments, IsOptional } from "class-validator";
-import { getValidationMessage, commonRegexPass } from "../../libs/password";
+import { IsEmail, IsOptional, IsNotEmpty, IsStrongPassword, MinLength } from "class-validator";
+import { IsUserAlreadyExist } from "../../validators/user.validator";
 
 export class CreateUserDto {
+  @IsNotEmpty({
+    message: "Email cannot be empty."
+  })
   @IsEmail({
   }, {
-    message: "Email must be a valid address"
+    message: "Email must be a valid address."
   })
+  @IsUserAlreadyExist()
   email: string;
 
+  @IsNotEmpty({
+    message: "Password cannot be empty."
+  })
   @MinLength(8, {
     message: "Password must be at least 8 characters"
   })
-  @Matches(new RegExp(commonRegexPass), {
-    message: (args: ValidationArguments) => {
-      const password = args.value as string;
-      return getValidationMessage(password)
-    }
-  })
+  @IsStrongPassword()
   password: string;
 
   @IsOptional()
