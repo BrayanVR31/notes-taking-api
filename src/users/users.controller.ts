@@ -1,10 +1,12 @@
-import { Body, Controller, Param, Get, HttpCode, ParseIntPipe, Patch, Post, Query, Req, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
+import { Body, Controller, Param, Get, HttpCode, ParseIntPipe, Patch, Post, Query, Req, UseInterceptors, ClassSerializerInterceptor, UseGuards } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { parseSortQueryList } from 'src/libs/sorting-query';
 import { getFullURL } from 'src/libs/url';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+// TODO: implement authGuard in necessary endpoints
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) { }
@@ -14,6 +16,7 @@ export class UsersController {
     return this.userService.create(createUserDto);
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   @HttpCode(200)
   async findAll(
