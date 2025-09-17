@@ -3,6 +3,8 @@ import { PrismaService } from '../prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import bcrypt from 'bcrypt';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +29,22 @@ export class UsersService {
         ...user,
         password: hashedPass,
       }
+    });
+  }
+
+  updateOne(userId: number, user: UpdateUserDto) {
+
+    return this.prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: user
+    });
+  }
+
+  findOne(userId: number) {
+    return this.prisma.user.findUnique({
+      where: { id: userId }
     });
   }
 

@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpCode, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Param, Get, HttpCode, ParseIntPipe, Patch, Post, Query, Req, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { parseSortQueryList } from 'src/libs/sorting-query';
 import { getFullURL } from 'src/libs/url';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -34,5 +35,14 @@ export class UsersController {
     };
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Patch(":id")
+  updateOne(@Param("id", ParseIntPipe) userId: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.updateOne(userId, updateUserDto);
+  }
 
+  @Get(":id")
+  findOne(@Param("id") userId: number) {
+    return this.userService.findOne(userId);
+  }
 }

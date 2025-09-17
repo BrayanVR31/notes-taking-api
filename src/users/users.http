@@ -6,6 +6,16 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "email": "admin101@gmail.com",
+  "email": "admin109@gmail.com",
   "password": "aT67@sim20"
+}
+
+### Update an existing user
+PATCH http://localhost:3000/users/11
+Content-Type: application/json
+
+{
+  "email": "rand22@gmail.com",
+  "password": "aT67@sim21",
+  "profile_image": "profile.png"
 }

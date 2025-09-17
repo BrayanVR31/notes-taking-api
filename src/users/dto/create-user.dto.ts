@@ -1,7 +1,9 @@
 import { IsEmail, IsOptional, IsNotEmpty, IsStrongPassword, MinLength } from "class-validator";
+import { Exclude, Expose } from "class-transformer";
 import { IsUserAlreadyExist } from "../../validators/user.validator";
 
 export class CreateUserDto {
+  @Exclude({ toPlainOnly: true })
   @IsNotEmpty({
     message: "Email cannot be empty."
   })
@@ -10,8 +12,9 @@ export class CreateUserDto {
     message: "Email must be a valid address."
   })
   @IsUserAlreadyExist()
-  email: string;
+  readonly email: string;
 
+  @Exclude({ toPlainOnly: true })
   @IsNotEmpty({
     message: "Password cannot be empty."
   })
@@ -19,8 +22,11 @@ export class CreateUserDto {
     message: "Password must be at least 8 characters"
   })
   @IsStrongPassword()
-  password: string;
+  readonly password: string;
 
+  @Expose({
+    name: "profile_image"
+  })
   @IsOptional()
-  profileImage: string;
+  readonly profileImage: string;
 }
