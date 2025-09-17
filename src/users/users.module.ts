@@ -5,6 +5,7 @@ import { PrismaService } from '../prisma.service';
 import { IsUserAlreadyExistConstraint } from '../validators/user.validator';
 
 @Module({
+  exports: [UsersService],
   controllers: [UsersController],
   providers: [PrismaService, UsersService, IsUserAlreadyExistConstraint],
 })
