@@ -7,4 +7,4 @@ import { PrismaService } from 'src/prisma.service';
   controllers: [TagsController],
   providers: [PrismaService, TagsService],
 })
-export class TagsModule {}
+export class TagsModule { }

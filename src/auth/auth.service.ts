@@ -1,25 +1,30 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import bcrypt from "bcrypt";
-import { UsersService } from '../users/users.service';
-import { SignInDto } from "./dto/SignIn.dto";
-import { JwtService } from '@nestjs/jwt';
+import { UsersService } from '@/users/users.service';
+import { User } from '@prisma/client';
+import { TokenService } from '@/token/token.service';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UsersService, private jwtService: JwtService) { }
+  constructor(private userService: UsersService, private tokenService: TokenService) { }
 
-  async signIn({ email, password }: SignInDto): Promise<{
-    access_token: string;
-  }> {
-    const existingUser = await this.userService.findByEmail(email);
-    if (!existingUser) throw new UnauthorizedException();
-    // Match the current password with bcrypt
-    const matchedPass = await bcrypt.compare(password, existingUser.password);
-    if (!matchedPass) throw new UnauthorizedException();
-    // Signing and creating JWT token
-    const payload = { sub: existingUser.id, email: existingUser.email };
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.findByEmail(email);
+    // When the user credentials are matched
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...results } = user;
+      return results;
+    }
+    return null;
+  }
+
+  async login(user: User): Promise<Record<"access_token" | "refresh_token", string>> {
     return {
-      access_token: await this.jwtService.signAsync(payload)
+      access_token: await this.tokenService.insertAccessToken(user),
+      refresh_token: await this.tokenService.insertRefreshToken(user)
     };
   }
+
+
+
 }

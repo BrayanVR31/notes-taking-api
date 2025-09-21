@@ -4,19 +4,19 @@ import { parseSortQueryList } from 'src/libs/sorting-query';
 import { getFullURL } from 'src/libs/url';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { AuthGuard } from 'src/auth/auth.guard';
+import { SkipAuth } from '@/constants/jwt.constant';
 
 // TODO: implement authGuard in necessary endpoints
 @Controller('users')
 export class UsersController {
   constructor(private readonly userService: UsersService) { }
 
+  @SkipAuth()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.create(createUserDto);
   }
 
-  @UseGuards(AuthGuard)
   @Get()
   @HttpCode(200)
   async findAll(

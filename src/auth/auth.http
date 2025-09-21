@@ -1,8 +1,14 @@
 ### Login using user credentials
 POST http://localhost:3000/auth/login
 Content-Type: application/json
+session: authSession
 
 {
-  "email": "admin@gmail.com",
+  "email": "guess@gmail.com",
   "password": "currentPass202$5"
 }
+
+### Create a new access token
+GET http://localhost:3000/auth/refresh-token
+Content-Type: application/json
+session: authSession

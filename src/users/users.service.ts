@@ -33,7 +33,6 @@ export class UsersService {
   }
 
   updateOne(userId: number, user: UpdateUserDto) {
-
     return this.prisma.user.update({
       where: {
         id: userId
