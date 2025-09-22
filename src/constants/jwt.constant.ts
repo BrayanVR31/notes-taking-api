@@ -1,7 +1,7 @@
 import { SetMetadata } from "@nestjs/common";
 
 // TODO: Make a secure plublic key and load it from secure file such as .env
-export const IS_PUBLIC_KEY = 'public key example';
+export const IS_PUBLIC_KEY = 'isPublic';
 export const SkipAuth = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 export const jwtConstants = {

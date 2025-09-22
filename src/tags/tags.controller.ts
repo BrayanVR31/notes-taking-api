@@ -16,8 +16,8 @@ import {
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { parseSortQueryList } from 'src/libs/sorting-query';
-import { getFullURL } from 'src/libs/url';
+import { parseSortQueryList } from '@/libs/sorting-query';
+import { getFullURL } from '@/libs/url';
 
 @Controller('tags')
 export class TagsController {
@@ -29,7 +29,6 @@ export class TagsController {
   }
 
   @Get()
-  @HttpCode(200)
   async findAll(
     @Req() req: Request,
     @Query('orderby') queryOrder: string,

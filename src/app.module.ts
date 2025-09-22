@@ -7,13 +7,11 @@ import { PrismaService } from './prisma.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh-auth.guard';
 
 @Module({
   imports: [TagsModule, UsersModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService, {
-    provide: APP_GUARD,
-    useClass: JwtAuthGuard
-  }],
+  providers: [AppService, PrismaService],
 })
 export class AppModule { }

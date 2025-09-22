@@ -8,18 +8,22 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TokenService } from '@/token/token.service';
 import { PrismaService } from '@/prisma.service';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { jwtConstants } from '@/constants/jwt.constant';
 
 @Module({
   imports: [
     UsersModule,
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET, // TODO: Create a constants file to load vars
-      signOptions: { expiresIn: '60s' }
+      secret: jwtConstants.secretAccess,
+      signOptions: {
+        expiresIn: "15m"
+      }
     })
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, TokenService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, PrismaService, TokenService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService]
 })
 export class AuthModule { }

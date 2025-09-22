@@ -6,21 +6,23 @@ import { UsersService } from "@/users/users.service";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private readonly userService: UsersService;
 
-  constructor(userService: UsersService) {
+  constructor(private readonly usersService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: jwtConstants.secretAccess || ""
+      secretOrKey: jwtConstants.secretAccess || "",
     });
-    this.userService = userService;
   }
 
   async validate(payload: any) {
-    console.log("normal token")
-    const user = await this.userService.findOne(payload.sub);
-    if (!user) throw new UnauthorizedException("error");
+    console.log('payload', payload);
+    const user = await this.usersService.findOne({
+      where: {
+        id: payload.id,
+      }
+    });
+    if (!user) throw new UnauthorizedException("Invalid token");
     return user;
   }
 }

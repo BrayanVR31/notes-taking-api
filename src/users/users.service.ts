@@ -41,9 +41,9 @@ export class UsersService {
     });
   }
 
-  findOne(userId: number) {
+  findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
     return this.prisma.user.findUnique({
-      where: { id: userId }
+      where: userWhereUniqueInput
     });
   }
 
