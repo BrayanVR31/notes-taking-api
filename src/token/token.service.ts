@@ -32,15 +32,14 @@ export class TokenService {
   }
 
   async insertAccessToken(user: User): Promise<string> {
-    const payload: Payload = { sub: user.id, username: user.username ?? "" }
+    const payload: Payload = { sub: user.id, username: user.username! }
     return await this.jwtService.signAsync(payload, {
-      expiresIn: jwtConstants.accessExpiration,
-      secret: `${jwtConstants.secretAccess}ms`
+      expiresIn: `${jwtConstants.accessExpiration}ms`,
+      secret: jwtConstants.secretAccess
     })
   }
 
   async createRefreshToken(userId: number, refreshToken?: string, refreshTokenExp?: Date) {
-    console.log("calling createRefreshToken: ", refreshToken)
     const generatedToken = await this.jwtService.signAsync({
       sub: userId
     }, {
@@ -59,7 +58,6 @@ export class TokenService {
         }
       })
     }
-    console.log({ generatedToken })
     return generatedToken;
   }
 
@@ -75,7 +73,6 @@ export class TokenService {
   async createTokens(user: User, refreshToken?: string, refreshTokenExp?: Date) {
     const payload = { username: user.username, sub: user.id };
 
-    console.log({ user, refreshToken, refreshTokenExp })
     return {
       access_token: await this.jwtService.signAsync(payload, {
         secret: jwtConstants.secretAccess,

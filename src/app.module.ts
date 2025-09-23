@@ -12,6 +12,9 @@ import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh-auth.guard';
 @Module({
   imports: [TagsModule, UsersModule, AuthModule],
   controllers: [AppController],
-  providers: [AppService, PrismaService],
+  providers: [{
+    provide: APP_GUARD,
+    useClass: JwtAuthGuard
+  }, AppService, PrismaService],
 })
 export class AppModule { }
