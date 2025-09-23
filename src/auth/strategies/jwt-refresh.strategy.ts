@@ -10,7 +10,9 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 
   constructor(private readonly userService: UsersService) {
     super({
-      jwtFromRequest: ExtractJwt.fromBodyField("refreshToken"),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => req.cookies["refresh"]
+      ]),
       ignoreExpiration: false,
       secretOrKey: jwtConstants.secretRefresh || ""
     });
@@ -18,10 +20,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
 
   async validate(payload: any) {
     const user = await this.userService.findOne({ id: payload.sub });
-    if (!user) throw new UnauthorizedException();
-    return {
-      attributes: user,
-      refreshTokenExp: new Date(payload.exp * 1_000)
-    };
+    if (!user) throw new UnauthorizedException("Invalid token");
+    return user;
   }
 }

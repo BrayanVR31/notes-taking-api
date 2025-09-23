@@ -1,13 +1,22 @@
 import { IS_PUBLIC_KEY } from '@/constants/jwt.constant';
-import { ExecutionContext, Injectable } from '@nestjs/common';
+import { ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
+// TODO: Solve the issue when the access token is passed into the refresh cookie token, it has valid access even when both are different secret keys
 @Injectable()
 export class JwtRefreshAuthGuard extends AuthGuard("jwt-refresh") {
   constructor(private reflector: Reflector) {
     super();
+  }
+
+  handleRequest(err: any, user: any, info: any, context: ExecutionContext, status?: any) {
+    if (err || !user) throw new UnauthorizedException({
+      message: "Expired session, log in again",
+      statusCode: 401
+    });
+    return user;
   }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
@@ -15,7 +24,6 @@ export class JwtRefreshAuthGuard extends AuthGuard("jwt-refresh") {
       context.getHandler(),
       context.getClass()
     ]);
-    console.log({ isPublic, jwtRefreshAuthGuard: true })
 
     if (isPublic) return true;
     return super.canActivate(context);
