@@ -1,4 +1,4 @@
-import { IS_PUBLIC_KEY } from "@/constants/jwt.constant";
+import { IS_PUBLIC_KEY, IS_ONLY_REFRESH_KEY } from "@/constants/jwt.constant";
 import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { AuthGuard } from "@nestjs/passport";
@@ -12,7 +12,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
 
   handleRequest(err: any, user: any, info: any, context: ExecutionContext, status?: any) {
     if (err || !user) throw new UnauthorizedException({
-      message: "Invalid session, try it again",
+      message: "Expired session, try it again",
       statusCode: 401
     });
     return user;
@@ -23,8 +23,12 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
       context.getHandler(),
       context.getClass()
     ]);
+    const isOnlyRefresh = this.reflector.getAllAndOverride<boolean>(IS_ONLY_REFRESH_KEY, [
+      context.getHandler(),
+      context.getClass()
+    ]);
 
-    if (isPublic) return true;
+    if (isPublic || isOnlyRefresh) return true;
     return super.canActivate(context);
   }
 }

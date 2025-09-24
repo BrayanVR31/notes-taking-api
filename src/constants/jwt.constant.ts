@@ -2,7 +2,9 @@ import { SetMetadata } from "@nestjs/common";
 
 // TODO: Make a secure plublic key and load it from secure file such as .env
 export const IS_PUBLIC_KEY = 'isPublic';
+export const IS_ONLY_REFRESH_KEY = 'isOnlyRefresh';
 export const SkipAuth = () => SetMetadata(IS_PUBLIC_KEY, true);
+export const OnlyRefreshToken = () => SetMetadata(IS_ONLY_REFRESH_KEY, true);
 
 export const jwtConstants = {
   secretAccess: process.env.JWT_ACCESS_SECRET,

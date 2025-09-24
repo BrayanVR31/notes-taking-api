@@ -8,7 +8,7 @@ import { UsersService } from "@/users/users.service";
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
 
-  constructor(private readonly userService: UsersService) {
+  constructor(private readonly usersService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
         (req: Request) => req.cookies["refresh"]
@@ -19,7 +19,9 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh'
   }
 
   async validate(payload: any) {
-    const user = await this.userService.findOne({ id: payload.sub });
+    const { password, ...user } = await this.usersService.findOne({
+      id: payload.sub
+    }) ?? {};
     if (!user) throw new UnauthorizedException("Invalid token");
     return user;
   }

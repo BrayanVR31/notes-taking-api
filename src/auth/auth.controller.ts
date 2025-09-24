@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { type Response, type Request } from "express";
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth.guard';
-import { jwtConstants, SkipAuth } from '@/constants/jwt.constant';
+import { jwtConstants, SkipAuth, OnlyRefreshToken } from '@/constants/jwt.constant';
 
 @Controller('auth')
 export class AuthController {
@@ -26,10 +26,16 @@ export class AuthController {
     return { access_token }
   }
 
-  @UseGuards(LocalAuthGuard)
   @Post("/logout")
-  async logout(@Req() req: Request) {
-    return (req as any).logout();
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    req.user = undefined;
+    return await this.authService.logout(req.cookies["refresh"], res);
+  }
+
+  @OnlyRefreshToken()
+  @Get("/refresh")
+  async refresh(@Req() req: Request) {
+    return await this.authService.refresh(req.cookies["refresh"]);
   }
 
 }

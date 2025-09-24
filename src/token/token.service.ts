@@ -3,11 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from "bcrypt";
 import { Payload } from "@/interfaces/payload";
 import { PrismaService } from '@/prisma.service';
-import { Tag, Prisma, Token, User } from '@prisma/client';
-import { AccessTokenDto } from './dto/access-token.dto';
+import { User } from '@prisma/client';
 import { jwtConstants } from '@/constants/jwt.constant';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { connect } from 'node:net';
 
 @Injectable()
 export class TokenService {
@@ -21,7 +19,7 @@ export class TokenService {
       secret: jwtConstants.secretRefresh
     });
     const hashedToken = await bcrypt.hash(token, 10);
-    const createdToken = await this.prismaService.token.create({
+    await this.prismaService.token.create({
       data: {
         token: hashedToken,
         expiresAt: expiresMs,
@@ -80,6 +78,19 @@ export class TokenService {
       }),
       refresh_token: await this.createRefreshToken(user.id, refreshToken, refreshTokenExp)
     }
+  }
+
+  // TODO: Create a session table to syncronize incoming refresh token and delete it
+  async removeRefreshToken(token: string) {
+    const hashedToken = await bcrypt.hash(token, 10);
+    const foundToken = await this.prismaService.token.findUnique({
+      where: {
+        token: hashedToken
+      }
+    });
+    await this.prismaService.token.deleteMany({
+      where: { id: foundToken?.id ?? 0 }
+    });
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM)

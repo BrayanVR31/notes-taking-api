@@ -4,7 +4,6 @@ import { Prisma, User } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -41,7 +40,7 @@ export class UsersService {
     });
   }
 
-  findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
+  findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<User | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput
     });
