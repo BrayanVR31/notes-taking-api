@@ -8,13 +8,16 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { JwtRefreshAuthGuard } from './auth/guards/jwt-refresh-auth.guard';
+import { SessionService } from './session/session.service';
+import { SessionModule } from './session/session.module';
 
 @Module({
-  imports: [TagsModule, UsersModule, AuthModule],
+  imports: [TagsModule, UsersModule, AuthModule, SessionModule],
   controllers: [AppController],
   providers: [{ provide: APP_GUARD, useClass: JwtRefreshAuthGuard }, {
     provide: APP_GUARD,
     useClass: JwtAuthGuard
-  }, AppService, PrismaService],
+  }, AppService, PrismaService, SessionService],
+  exports: [PrismaService]
 })
 export class AppModule { }

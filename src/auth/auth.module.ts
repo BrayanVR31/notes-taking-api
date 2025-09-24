@@ -10,6 +10,7 @@ import { TokenService } from '@/token/token.service';
 import { PrismaService } from '@/prisma.service';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
 import { jwtConstants } from '@/constants/jwt.constant';
+import { TokenModule } from '@/token/token.module';
 
 @Module({
   imports: [
@@ -20,10 +21,11 @@ import { jwtConstants } from '@/constants/jwt.constant';
       signOptions: {
         expiresIn: "15m"
       }
-    })
+    }),
+    TokenModule
   ],
   controllers: [AuthController],
-  providers: [AuthService, PrismaService, TokenService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
+  providers: [AuthService, PrismaService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
   exports: [AuthService]
 })
 export class AuthModule { }

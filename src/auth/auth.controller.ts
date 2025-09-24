@@ -16,7 +16,10 @@ export class AuthController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response
   ) {
-    const { access_token, refresh_token } = await this.authService.login((req as any).user);
+    const { access_token, refresh_token } = await this.authService.login((req as any).user, {
+      ipAddress: req.ip,
+      userAgent: req.headers["user-agent"]
+    });
     res.cookie("refresh", refresh_token, {
       httpOnly: true,
       secure: false, // Enable on https protocol

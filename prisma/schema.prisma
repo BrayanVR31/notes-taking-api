@@ -24,6 +24,7 @@ model User {
   updatedAt    DateTime  @updatedAt @map("updated_at")
   deletedAt    DateTime? @map("deleted_at")
   username     String?   @unique @map("username")
+  Session      Session[]
   tokens       Token[]
 
   @@map("users")
@@ -39,4 +40,17 @@ model Token {
   User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
+}
+
+model Session {
+  id        String   @id @default(uuid()) @map("session_id")
+  userId    Int      @map("user_id")
+  token     String?
+  userAgent String?  @map("user_agent")
+  ipAddress String?  @map("ip_address")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
 }

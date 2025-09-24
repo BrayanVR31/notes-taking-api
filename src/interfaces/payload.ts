@@ -8,4 +8,5 @@ export class PayloadFull {
 export interface Payload {
   sub: number;
   username: string;
+  sid?: string;
 }

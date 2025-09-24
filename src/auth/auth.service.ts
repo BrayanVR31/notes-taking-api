@@ -6,6 +6,7 @@ import { TokenService } from '@/token/token.service';
 import { Payload } from '@/interfaces/payload';
 import { decode } from "jsonwebtoken";
 import { type Response } from "express";
+import { SessionData } from '@/interfaces/session';
 
 @Injectable()
 export class AuthService {
@@ -21,10 +22,11 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User): Promise<Record<"access_token" | "refresh_token", string>> {
+  async login(user: User, sessionData: SessionData): Promise<Record<"access_token" | "refresh_token", string>> {
+
     return {
       access_token: await this.tokenService.insertAccessToken(user),
-      refresh_token: await this.tokenService.insertRefreshToken(user)
+      refresh_token: await this.tokenService.insertRefreshToken(user, sessionData)
     };
   }
 
